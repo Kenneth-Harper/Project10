@@ -5,14 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
+
 class GlobalViewModel : ViewModel()
 {
     private val TAG = "GlobalViewModel"
 
-    private val _city = MutableLiveData<String>("Not yet Found")
+    private val _city = MutableLiveData("Not yet Found")
     val city : LiveData<String> get() = _city
 
-    private val _state = MutableLiveData<String>("Not yet Found")
+    private val _state = MutableLiveData("Not yet Found")
     val state : LiveData<String> get() = _state
 
     private val _temp = MutableLiveData<Float>()
@@ -21,7 +22,7 @@ class GlobalViewModel : ViewModel()
     private val _pressure = MutableLiveData<Float>()
     val pressure : LiveData<Float> get() = _pressure
 
-    private val _gestures = MutableLiveData<MutableList<String>>()
+    private val _gestures = MutableLiveData(mutableListOf<String>())
     val gestures : LiveData<List<String>> get() = _gestures as LiveData<List<String>>
 
     fun setTemp(newTemp: Float)

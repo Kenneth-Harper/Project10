@@ -12,6 +12,7 @@ import android.location.Geocoder
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -73,7 +74,6 @@ class SensorActivity : ComponentActivity()
     private var sensorManager : SensorManager? = null
     private var lmManager : LocationManager? = null
     private var geocoder : Geocoder? = null
-
 
     private var amTempSensor : Sensor? = null
     private var tempListener : SensorEventListener? = null
@@ -238,8 +238,9 @@ fun FlingButton(onFling: () -> Unit)
             }
         }
     }
+    val currentContext =LocalContext.current
     // Creates a button with the previously created modifier
-    Button(onClick = {}, modifier = modifier)
+    Button(onClick = { Toast.makeText(currentContext, "You must fling this button!", Toast.LENGTH_SHORT).show()}, modifier = modifier)
     {
         Text(text = "Gesture Playground")
     }
