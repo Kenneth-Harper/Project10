@@ -36,8 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -78,7 +76,7 @@ fun DisplayScreen(viewModel: GlobalViewModel)
 {
     val currentOrientation = LocalConfiguration.current.orientation
     val gesturesShown = if (viewModel.gestures.isInitialized) remember {mutableStateOf(viewModel.gestures.value!!.takeLast(10))}
-                        else remember { mutableStateOf(listOf<String>())}
+                        else remember { mutableStateOf(listOf())}
     val coroutineScope = rememberCoroutineScope()
 
     if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -96,7 +94,7 @@ fun DisplayScreen(viewModel: GlobalViewModel)
                 val maxX = (constraints.maxWidth - (50 * LocalDensity.current.density)).toInt()
                 val maxY = (constraints.maxHeight - (50 * LocalDensity.current.density)).toInt()
 
-                var position = remember { Animatable(Offset(maxX/2f, maxY/2f), Offset.VectorConverter)}
+                val position = remember { Animatable(Offset(maxX/2f, maxY/2f), Offset.VectorConverter)}
                 val onGesturePerformed = {deltaX : Float, deltaY : Float, maxWidth: Int, maxHeight: Int ->
                     val newDescription = getSwipeDescription(deltaX, deltaY)
                     viewModel.addGesture(newDescription)
@@ -137,7 +135,7 @@ fun DisplayScreen(viewModel: GlobalViewModel)
                 val maxX = (constraints.maxWidth - (50 * LocalDensity.current.density)).toInt()
                 val maxY = (constraints.maxHeight - (50 * LocalDensity.current.density)).toInt()
 
-                var position = remember { Animatable(Offset(maxX/2f, maxY/2f), Offset.VectorConverter)}
+                val position = remember { Animatable(Offset(maxX/2f, maxY/2f), Offset.VectorConverter)}
                 val onGesturePerformed = {deltaX : Float, deltaY : Float, maxWidth: Int, maxHeight: Int ->
                     val newDescription = getSwipeDescription(deltaX, deltaY)
                     viewModel.addGesture(newDescription)

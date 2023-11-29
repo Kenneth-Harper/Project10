@@ -1,6 +1,5 @@
 package kenharpe.iu.project10
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +7,7 @@ import androidx.lifecycle.ViewModel
 
 class GlobalViewModel : ViewModel()
 {
-    private val TAG = "GlobalViewModel"
+//    private val TAG = "GlobalViewModel"
 
     private val _city = MutableLiveData("Not yet Found")
     val city : LiveData<String> get() = _city
