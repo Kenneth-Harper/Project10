@@ -239,7 +239,7 @@ fun GestureList(gestureList: List<String>, modifier: Modifier)
 }
 
 private fun getSwipeDescription(deltaX: Float, deltaY: Float): String {
-    val tolerance = 0.4f
+    val tolerance = 0.6f
     val absDeltaX = deltaX.absoluteValue
     val absDeltaY = deltaY.absoluteValue
 
