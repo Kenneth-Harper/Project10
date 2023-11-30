@@ -12,6 +12,7 @@ import android.location.Geocoder
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -207,6 +208,7 @@ fun SensorsPlayground(viewModel: GlobalViewModel)
         {
             // Calls FlingButton using a lambda expression for onFling that starts the next activity
             FlingButton(onFling = {
+                Log.d("SensorActivity", "Intent called to start GestureActivity")
                 val intent = Intent(context, GestureActivity::class.java)
                 context.startActivity(intent)
             })
@@ -240,7 +242,10 @@ fun FlingButton(onFling: () -> Unit)
     }
     val currentContext =LocalContext.current
     // Creates a button with the previously created modifier
-    Button(onClick = { Toast.makeText(currentContext, "You must fling this button!", Toast.LENGTH_SHORT).show()}, modifier = modifier)
+    Button(onClick = {
+        Log.i("SensorActivity", "Toast Shown for FlingButton")
+        Toast.makeText(currentContext, "You must fling this button!", Toast.LENGTH_SHORT).show() },
+        modifier = modifier)
     {
         Text(text = "Gesture Playground")
     }

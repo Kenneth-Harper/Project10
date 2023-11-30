@@ -1,5 +1,6 @@
 package kenharpe.iu.project10
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,7 @@ import androidx.lifecycle.ViewModel
  */
 class GlobalViewModel : ViewModel()
 {
-//    private val TAG = "GlobalViewModel"
+    private val TAG = "GlobalViewModel"
     /**
      * <h2> Member Attributes </h2>
      * <ul>
@@ -51,6 +52,7 @@ class GlobalViewModel : ViewModel()
      */
     fun setTemp(newTemp: Float)
     {
+        Log.i(TAG, "Temperature Value Updated")
         _temp.value = (newTemp * 1.8f) + 32f
     }
 
@@ -62,6 +64,7 @@ class GlobalViewModel : ViewModel()
      */
     fun setPressure(pressure: Float)
     {
+        Log.i(TAG, "Pressure Value Updated")
         _pressure.value = pressure
     }
 
@@ -73,17 +76,19 @@ class GlobalViewModel : ViewModel()
      */
     fun setCity(newCity: String)
     {
+        Log.i(TAG, "City Value Updated")
         _city.value = newCity
     }
 
     /**
-     * <h2> setCity </h2>
+     * <h2> setState </h2>
      * Function that sets the _state value to newState
      * @param newState   String representing the name of the state the phone is in
      * @return          <code>Unit</code>
      */
     fun setState(newState: String)
     {
+        Log.i(TAG, "State Value Updated")
         _state.value = newState
     }
 
@@ -95,6 +100,7 @@ class GlobalViewModel : ViewModel()
      */
     fun addGesture(newGesture: String)
     {
+        Log.i(TAG, "Gesture Value Added to _gestures")
         _gestures.value?.add(newGesture)
     }
 }
