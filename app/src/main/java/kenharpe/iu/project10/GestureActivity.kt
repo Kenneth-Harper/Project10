@@ -48,9 +48,20 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
+/**
+ * <h1> GestureActivity Class </h1>
+ * The class extending ComponentActivity responsible for the display of the second screen
+ * where gestures determine how to move a ball, and are displayed on screen as well
+ */
+
 class GestureActivity : ComponentActivity()
 {
-
+    /**
+     * <h2> Member Attributes </h2>
+     * <ul>
+     *     <li> viewModel: The ViewModel for the app
+     * </ul>
+     */
     private val viewModel : GlobalViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -71,16 +82,25 @@ class GestureActivity : ComponentActivity()
     }
 }
 
+/**
+ * <h2> DisplayScreen </h2>
+ * Function that generates the main UI structure for the activity
+ * @param viewModel viewModel for the whole application
+ * @return          <code>Unit</code>
+ */
 @Composable
 fun DisplayScreen(viewModel: GlobalViewModel)
 {
-    val currentOrientation = LocalConfiguration.current.orientation
-    val gesturesShown = if (viewModel.gestures.isInitialized) remember {mutableStateOf(viewModel.gestures.value!!.takeLast(10))}
-                        else remember { mutableStateOf(listOf())}
+    // Setup a State object that will display all gestures that have been performed, either from viewModel, or an empty list
+    val gesturesShown = if (viewModel.gestures.isInitialized) remember { mutableStateOf(viewModel.gestures.value!!.takeLast(10)) }
+                        else remember { mutableStateOf(listOf()) }
     val coroutineScope = rememberCoroutineScope()
 
+    // Check the orientation of the phone
+    val currentOrientation = LocalConfiguration.current.orientation
     if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE)
     {
+        // Set the landscape UI of the activity
         Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceEvenly)
         {
             BoxWithConstraints( modifier = Modifier
@@ -90,11 +110,13 @@ fun DisplayScreen(viewModel: GlobalViewModel)
                 .background(color = Color.DarkGray))
             {
                 Text("Gesture Playground", color = Color.Gray, fontSize = 40.sp)
-
+                // Get the maximum values position can be
                 val maxX = (constraints.maxWidth - (50 * LocalDensity.current.density)).toInt()
                 val maxY = (constraints.maxHeight - (50 * LocalDensity.current.density)).toInt()
 
+                // Set the initial position to the middle of the gesture area
                 val position = remember { Animatable(Offset(maxX/2f, maxY/2f), Offset.VectorConverter)}
+                // Set a lambda expression to be performed whenever a gesture is detected
                 val onGesturePerformed = {deltaX : Float, deltaY : Float, maxWidth: Int, maxHeight: Int ->
                     val newDescription = getSwipeDescription(deltaX, deltaY)
                     viewModel.addGesture(newDescription)
@@ -104,15 +126,9 @@ fun DisplayScreen(viewModel: GlobalViewModel)
                     val targetOffset = Offset(targetX.toFloat(), targetY.toFloat())
                     coroutineScope.launch { position.animateTo(targetOffset) }
                 }
-
-                GestureCanvas(
-                    position = position.value,
-                    onGesturePerformed = onGesturePerformed,
-                    maxX = maxX,
-                    maxY = maxY
-                )
+                GestureCanvas(position.value, onGesturePerformed, maxX, maxY)
             }
-
+            // Creates the modifier for the second half of the screen, which shows what gestures have been made
             val listModifier = Modifier
                 .fillMaxHeight()
                 .weight(1f)
@@ -122,6 +138,7 @@ fun DisplayScreen(viewModel: GlobalViewModel)
     }
     else
     {
+        // Set the portrait UI of the activity
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly)
         {
             BoxWithConstraints( modifier = Modifier
@@ -131,11 +148,13 @@ fun DisplayScreen(viewModel: GlobalViewModel)
                 .background(color = Color.DarkGray), contentAlignment = Alignment.Center)
             {
                 Text("Gesture Playground", color = Color.Gray, fontSize = 40.sp)
-
+                // Get the maximum values position can be
                 val maxX = (constraints.maxWidth - (50 * LocalDensity.current.density)).toInt()
                 val maxY = (constraints.maxHeight - (50 * LocalDensity.current.density)).toInt()
 
+                // Set the initial position to the middle of the gesture area
                 val position = remember { Animatable(Offset(maxX/2f, maxY/2f), Offset.VectorConverter)}
+                // Set a lambda expression to be performed whenever a gesture is detected
                 val onGesturePerformed = {deltaX : Float, deltaY : Float, maxWidth: Int, maxHeight: Int ->
                     val newDescription = getSwipeDescription(deltaX, deltaY)
                     viewModel.addGesture(newDescription)
@@ -145,13 +164,9 @@ fun DisplayScreen(viewModel: GlobalViewModel)
                     val targetOffset = Offset(targetX.toFloat(), targetY.toFloat())
                     coroutineScope.launch { position.animateTo(targetOffset) }
                 }
-                GestureCanvas(
-                    position = position.value,
-                    onGesturePerformed = onGesturePerformed,
-                    maxX = maxX,
-                    maxY = maxY
-                )
+                GestureCanvas(position.value, onGesturePerformed, maxX, maxY)
             }
+            // Creates the modifier for the second half of the screen, which shows what gestures have been made
             val listModifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -161,6 +176,15 @@ fun DisplayScreen(viewModel: GlobalViewModel)
     }
 }
 
+/**
+ * <h2> GestureCanvas </h2>
+ * Function that generates the box in which gestures are to be made, and where the ball is shown
+ * @param position              Offset object that tracks where the ball is supposed to be
+ * @param onGesturePerformed    Lambda expression which is called when a gesture is performed
+ * @param maxX                  Int value representing the maximum x-Coordinate of the ball
+ * @param maxY                  Int value representing the maximum y-Coordinate of the ball
+ * @return                      <code>Unit</code>
+ */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GestureCanvas(position: Offset, onGesturePerformed: (Float, Float, Int, Int) -> Job, maxX: Int, maxY: Int)
@@ -209,6 +233,13 @@ fun GestureCanvas(position: Offset, onGesturePerformed: (Float, Float, Int, Int)
     }
 }
 
+/**
+ * <h2> Clamp </h2>
+ * Function that clamps currentValue to between or equal to 0 and maxValue.
+ * @param currentValue  The value being checked
+ * @param maxValue      The maximum value currentValue is allowed to be
+ * @return              <code>Int</code>
+ */
 fun clamp(currentValue: Float, maxValue: Int): Int
 {
     return when
@@ -219,6 +250,13 @@ fun clamp(currentValue: Float, maxValue: Int): Int
     }
 }
 
+/**
+ * <h2> GestureList </h2>
+ * Function that generates the list of gestures in the second half of the screen
+ * @param gestureList   The list of gestures which will be displayed
+ * @param modifier      The modifier meant to be applied to the column element
+ * @return              <code>Unit</code>
+ */
 @Composable
 fun GestureList(gestureList: List<String>, modifier: Modifier)
 {
@@ -229,14 +267,20 @@ fun GestureList(gestureList: List<String>, modifier: Modifier)
             .background(Color.LightGray)
         val numberEmpty = 10 - gestureList.size
         gestureList.forEach { gesture -> Text(gesture, textModifier, fontSize = 20.sp) }
-        for (i in 1..numberEmpty)
-        {
-            Text("", textModifier.background(Color.White), fontSize = 20.sp)
-        }
+        // Set the rest of the 10 elements so the visible gestures are spaced correctly
+        for (i in 1..numberEmpty) { Text("", textModifier.background(Color.White), fontSize = 20.sp) }
     }
 }
 
-private fun getSwipeDescription(deltaX: Float, deltaY: Float): String {
+/**
+ * <h2> getSwipeDescription </h2>
+ * Function that takes in the change in coordinates of the ball, and returns a string stating what gesture it was
+ * @param deltaX    Float value for the change in the xCoordinate of position
+ * @param deltaY    Float value for the change in the yCoordinate of position
+ * @return          <code>String</code>
+ */
+private fun getSwipeDescription(deltaX: Float, deltaY: Float): String
+{
     val tolerance = 0.6f
     val absDeltaX = deltaX.absoluteValue
     val absDeltaY = deltaY.absoluteValue
